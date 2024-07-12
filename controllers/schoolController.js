@@ -129,10 +129,43 @@ const resendVerification = async(req, res)=>{
 }
 
 
+// const login = async (req, res)=>{
+//     try {
+//         const {email, password}= req.body
+//         const findUser = await schoolModel.findOne({email})
+//         if(!findUser){
+//             return res.status(404).json({message:'user with this email does not exist'})
+//         }
+//         const matchedPassword = await bcrypt.compare(password, findUser.password)
+//        if(!matchedPassword){
+//             return res.status(400).json({message:'invalid password'})
+//         }
+//         if(findUser.isVerified === false){
+//            return  res.status(400).json({message:'user with this email is not verified'})
+//         }
+//         findUser.isLoggedIn = true
+//         const token = jwt.sign({ 
+//             name:findUser.name,
+//             email: findUser.email,
+//             userId: findUser._id }, 
+//             process.env.secret_key,
+//             { expiresIn: "1d" });
+
+//             return  res.status(200).json({message:'login successfully ',token})
+
+        
+//     } catch (error) {
+        
+//         return res.status(500).json(error.message);
+//     }
+// }
+
+
 const login = async (req, res)=>{
     try {
-        const {email, password}= req.body
-        const findUser = await schoolModel.findOne({email})
+        const {emailOrPaaword, password}= req.body
+        
+        const findUser = await schoolModel.findOne({$or:[{name:emailOrPaaword},{email:emailOrPaaword}]})
         if(!findUser){
             return res.status(404).json({message:'user with this email does not exist'})
         }
